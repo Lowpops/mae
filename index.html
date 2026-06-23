@@ -10,36 +10,51 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
+
 body {
-  margin: 0;
   font-family: 'Lato', Arial, sans-serif;
   font-weight: 300;
   background: #111;
   color: white;
   text-align: center;
-  scroll-behavior: smooth;
 }
 
-h1, h2 {
-  font-family: 'Playfair Display', serif;
-  margin-bottom: 10px;
+/* slider wrapper */
+#slider {
+  width: 100%;
+  height: 100vh;
+  transition: transform 0.7s cubic-bezier(0.77, 0, 0.18, 1);
 }
 
+/* each slide */
 section {
+  width: 100%;
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px;
+  /* fade-in when becoming active */
   opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.6s ease;
+  transition: opacity 0.5s ease 0.2s;
 }
 
-section.show {
+section.active {
   opacity: 1;
-  transform: translateY(0);
+}
+
+h1, h2 {
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 10px;
 }
 
 p {
@@ -79,12 +94,13 @@ img {
   margin: 10px 0;
 }
 
-.hidden { display: none; }
+.hidden { display: none !important; }
 
+/* carta */
 #carta {
+  display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   opacity: 0;
   transform: translateY(20px) scale(0.95);
   transition: all 0.6s ease;
@@ -94,37 +110,28 @@ img {
   border-radius: 16px;
   padding: 28px 24px;
 }
-
-#carta.show {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-#carta .letter-icon {
-  font-size: 28px;
-  margin-bottom: 12px;
-}
+#carta.show { opacity: 1; transform: translateY(0) scale(1); }
+#carta .letter-icon { font-size: 28px; margin-bottom: 12px; }
 
 #fotoFinal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   opacity: 0;
   transform: translateY(30px) scale(0.9);
   transition: all 0.8s ease;
 }
-
-#fotoFinal.show {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
+#fotoFinal.show { opacity: 1; transform: translateY(0) scale(1); }
 
 #presente {
   font-size: 80px;
   cursor: pointer;
   animation: pulse 1.5s infinite;
+  display: inline-block;
 }
-
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
@@ -133,12 +140,11 @@ img {
   animation: heartbeat 1.2s infinite;
   display: block;
 }
-
 @keyframes heartbeat {
-  0% { transform: scale(1); }
-  25% { transform: scale(1.2); }
-  40% { transform: scale(1); }
-  60% { transform: scale(1.15); }
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.2); }
+  40%  { transform: scale(1); }
+  60%  { transform: scale(1.15); }
   100% { transform: scale(1); }
 }
 
@@ -150,11 +156,7 @@ img {
   transform: translateY(20px) scale(0.95);
   transition: all 0.6s ease;
 }
-
-.msg.show {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
+.msg.show { opacity: 1; transform: translateY(0) scale(1); }
 
 #ultimaFoto {
   display: flex;
@@ -164,13 +166,8 @@ img {
   transform: translateY(20px);
   transition: all 0.8s ease;
 }
+#ultimaFoto.show { opacity: 1; transform: translateY(0); }
 
-#ultimaFoto.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* final buttons */
 .btns-finais {
   display: flex;
   gap: 12px;
@@ -182,37 +179,16 @@ img {
   pointer-events: none;
   margin-top: 24px;
 }
+.btns-finais.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.btns-finais button { margin-top: 0; }
 
-.btns-finais.show {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.btns-finais button {
-  margin-top: 0;
-  background: transparent;
-  border: 2px solid #ff4d6d;
-  color: #ff4d6d;
-}
-
-/* GALLERY SECTION */
-#galeria {
-  min-height: 100vh;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+/* GALLERY */
+#sec-galeria {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 40px 20px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.6s ease;
-}
-
-#galeria.show {
-  opacity: 1;
-  transform: translateY(0);
+  justify-content: flex-start;
+  padding-top: 60px;
 }
 
 .gallery-grid {
@@ -223,7 +199,6 @@ img {
   max-width: 340px;
   margin: 20px 0;
 }
-
 .gallery-grid img {
   width: 100%;
   max-width: none;
@@ -234,10 +209,7 @@ img {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-
-.gallery-grid img:hover {
-  transform: scale(1.03);
-}
+.gallery-grid img:active { transform: scale(0.97); }
 
 /* lightbox */
 #lightbox {
@@ -245,15 +217,12 @@ img {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.92);
-  z-index: 100;
+  z-index: 200;
   justify-content: center;
   align-items: center;
+  touch-action: auto;
 }
-
-#lightbox.open {
-  display: flex;
-}
-
+#lightbox.open { display: flex; }
 #lightbox img {
   max-width: 90vw;
   max-height: 85vh;
@@ -261,18 +230,15 @@ img {
   width: auto;
   margin: 0;
 }
-
 #lightbox-close {
   position: absolute;
-  top: 20px;
-  right: 24px;
+  top: 20px; right: 24px;
   font-size: 32px;
   cursor: pointer;
   color: white;
   background: none;
   border: none;
-  padding: 0;
-  margin: 0;
+  padding: 0; margin: 0;
   line-height: 1;
 }
 </style>
@@ -280,92 +246,94 @@ img {
 
 <body>
 
-<!-- 0 -->
-<section>
-  <div class="label">para você 🌸</div>
-  <h1>Feliz aniversário mãe ❤️</h1>
-  <button onclick="scrollToSection(1)">Próximo</button>
-</section>
+<div id="slider">
 
-<!-- 1 -->
-<section>
-  <h1>Eu não sabia o que fazer de presente</h1>
-  <button onclick="mostrarMensagem(this)">➡️</button>
-  <div id="msg1" class="msg">
-    <p>Então aqui vai</p>
-    <button onclick="scrollToSection(2)">Começar</button>
-  </div>
-</section>
+  <!-- 0 -->
+  <section>
+    <div class="label">para você 🌸</div>
+    <h1>Feliz aniversário, mãe ❤️</h1>
+    <button onclick="goTo(1)">Próximo</button>
+  </section>
 
-<!-- 2 -->
-<section>
-  <img src="Foto (4).jpeg">
-  <p>Obrigado por sempre estar comigo.</p>
-  <button onclick="scrollToSection(3)">Próximo</button>
-</section>
-
-<!-- 3 -->
-<section>
-  <img src="Foto (2).jpeg">
-  <p>Você sempre cuidou de tudo.</p>
-  <button onclick="scrollToSection(4)">Próximo</button>
-</section>
-
-<!-- 4 -->
-<section>
-  <div class="label">um presente especial 🎁</div>
-  <h2>Pra você</h2>
-  <div id="presente" onclick="abrirPresente()">🎁</div>
-  <div id="carta" class="hidden">
-    <div class="letter-icon">💌</div>
-    <p>
-      Hoje é um dia especial e não poderia deixar passar sem te dizer o quanto você é importante pra mim.<br><br>
-      Você é daquelas pessoas que fazem tudo ficar mais leve.<br><br>
-      Obrigado por tudo que você faz por mim.<br><br>
-      Eu te amo ❤️<br><br>
-      Lorenzo
-    </p>
-    <button onclick="mostrarFoto()">Continuar</button>
-  </div>
-  <div id="fotoFinal" class="hidden">
-    <img src="Foto (1).jpeg">
-    <p class="heart">❤️</p>
-    <button onclick="scrollToSection(5)">Continuar</button>
-  </div>
-</section>
-
-<!-- 5 -->
-<section>
-  <div class="label">última coisa... 🌸</div>
-  <h2>Eu te amo muito ❤️</h2>
-  <button id="btnNaoClica" onclick="mostrarMensagemFinal(this)">não clica</button>
-  <div id="msgFinal" class="msg">
-    <p>P.S. Feliz dia das mães atrasado.</p>
-    <div id="ultimaFoto" class="hidden">
-      <img src="Foto (6).jpeg">
-      <span class="heart">❤️</span>
+  <!-- 1 -->
+  <section>
+    <h1>Eu não sabia o que fazer de presente</h1>
+    <button id="btnSeta" onclick="mostrarMensagem()">➡️</button>
+    <div id="msg1" class="msg">
+      <p>Então aqui vai</p>
+      <button onclick="goTo(2)">Começar</button>
     </div>
-  </div>
-  <div class="btns-finais" id="btnsFinais">
-    <button onclick="resetar()">🔁 Ver de novo</button>
-    <button onclick="abrirGaleria()">🖼️ Galeria</button>
-  </div>
-</section>
+  </section>
 
-<!-- 6 — GALERIA -->
-<section id="galeria" class="hidden">
-  <div class="label">nossas fotos 📸</div>
-  <h2>Momentos especiais</h2>
-  <div class="gallery-grid">
-    <img src="Foto (1).jpeg" onclick="abrirLightbox(this.src)">
-    <img src="Foto (2).jpeg" onclick="abrirLightbox(this.src)">
-    <img src="Foto (3).jpeg" onclick="abrirLightbox(this.src)">
-    <img src="Foto (4).jpeg" onclick="abrirLightbox(this.src)">
-    <img src="Foto (5).jpeg" onclick="abrirLightbox(this.src)">
-    <img src="Foto (6).jpeg" onclick="abrirLightbox(this.src)">
-  </div>
-  <button onclick="scrollToSection(5)">← Voltar</button>
-</section>
+  <!-- 2 -->
+  <section>
+    <img src="Foto (4).jpeg">
+    <p>Obrigado por sempre estar comigo.</p>
+    <button onclick="goTo(3)">Próximo</button>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <img src="Foto (2).jpeg">
+    <p>Você sempre cuidou de tudo.</p>
+    <button onclick="goTo(4)">Próximo</button>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <div class="label">um presente especial 🎁</div>
+    <h2>Pra você</h2>
+    <div id="presente" onclick="abrirPresente()">🎁</div>
+    <div id="carta" class="hidden">
+      <div class="letter-icon">💌</div>
+      <p>
+        Hoje é um dia especial e não poderia deixar passar sem te dizer o quanto você é importante pra mim.<br><br>
+        Você é daquelas pessoas que fazem tudo ficar mais leve.<br><br>
+        Obrigado por tudo que você faz por mim.<br><br>
+        Eu te amo ❤️<br><br>
+        Lorenzo
+      </p>
+      <button onclick="mostrarFoto()">Continuar</button>
+    </div>
+    <div id="fotoFinal" class="hidden">
+      <img src="Foto (1).jpeg">
+      <span class="heart">❤️</span>
+      <button onclick="goTo(5)">Continuar</button>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <div class="label">última coisa... 🌸</div>
+    <h2>Eu te amo muito ❤️</h2>
+    <button id="btnNaoClica" onclick="mostrarMensagemFinal()">não clica</button>
+    <div id="msgFinal" class="msg">
+      <p>P.S. Feliz dia das mães atrasado.</p>
+      <div id="ultimaFoto" class="hidden">
+        <img src="Foto (6).jpeg">
+        <span class="heart">❤️</span>
+      </div>
+    </div>
+    <div class="btns-finais" id="btnsFinais">
+      <button onclick="resetar()">🔁 Ver de novo</button>
+      <button onclick="goTo(6)">🖼️ Galeria</button>
+    </div>
+  </section>
+
+  <!-- 6 — GALERIA -->
+  <section id="sec-galeria">
+    <div class="label">nossas fotos 📸</div>
+    <h2>Momentos especiais</h2>
+    <div class="gallery-grid">
+      <img src="Foto (1).jpeg" onclick="abrirLightbox(this.src)">
+      <img src="Foto (2).jpeg" onclick="abrirLightbox(this.src)">
+      <img src="Foto (4).jpeg" onclick="abrirLightbox(this.src)">
+      <img src="Foto (6).jpeg" onclick="abrirLightbox(this.src)">
+    </div>
+    <button onclick="goTo(5)">← Voltar</button>
+  </section>
+
+</div><!-- /slider -->
 
 <!-- LIGHTBOX -->
 <div id="lightbox">
@@ -374,22 +342,45 @@ img {
 </div>
 
 <script>
+const slider   = document.getElementById("slider");
+const allSecs  = () => document.querySelectorAll("#slider section");
+let current = 0;
 
-const sections = () => document.querySelectorAll("section");
+function goTo(i) {
+  const secs = allSecs();
 
-function scrollToSection(i){
-  sections()[i].scrollIntoView({ behavior: "smooth" });
+  // deactivate current
+  secs[current].classList.remove("active");
+
+  current = i;
+
+  // stack sections vertically and slide wrapper
+  slider.style.transform = `translateY(-${i * 100}vh)`;
+
+  // activate new section after slide starts
+  setTimeout(() => secs[current].classList.add("active"), 100);
 }
 
-function mostrarMensagem(btn){
-  btn.style.display = "none";
+// block all touch scroll on body
+document.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
+document.addEventListener("wheel",     e => e.preventDefault(), { passive: false });
+
+// activate first section on load
+window.addEventListener("load", () => {
+  allSecs()[0].classList.add("active");
+});
+
+/* ── INTERACTIONS ── */
+
+function mostrarMensagem() {
+  document.getElementById("btnSeta").style.display = "none";
   document.getElementById("msg1").classList.add("show");
 }
 
-function abrirPresente(){
+function abrirPresente() {
   const presente = document.getElementById("presente");
-  const carta = document.getElementById("carta");
-  presente.style.opacity = "0";
+  const carta    = document.getElementById("carta");
+  presente.style.opacity   = "0";
   presente.style.transform = "scale(0.8)";
   setTimeout(() => {
     presente.style.display = "none";
@@ -398,9 +389,9 @@ function abrirPresente(){
   }, 400);
 }
 
-function mostrarFoto(){
+function mostrarFoto() {
   const carta = document.getElementById("carta");
-  const foto = document.getElementById("fotoFinal");
+  const foto  = document.getElementById("fotoFinal");
   carta.style.opacity = "0";
   setTimeout(() => {
     carta.style.display = "none";
@@ -409,8 +400,8 @@ function mostrarFoto(){
   }, 400);
 }
 
-function mostrarMensagemFinal(btn){
-  btn.style.display = "none";
+function mostrarMensagemFinal() {
+  document.getElementById("btnNaoClica").style.display = "none";
   document.getElementById("msgFinal").classList.add("show");
   setTimeout(() => {
     const ultimaFoto = document.getElementById("ultimaFoto");
@@ -422,87 +413,55 @@ function mostrarMensagemFinal(btn){
   }, 5000);
 }
 
-function abrirGaleria(){
-  const galeria = document.getElementById("galeria");
-  galeria.classList.remove("hidden");
-  setTimeout(() => {
-    galeria.scrollIntoView({ behavior: "smooth" });
-    setTimeout(() => galeria.classList.add("show"), 300);
-  }, 50);
-}
+function resetar() {
+  // reset state
+  document.getElementById("btnSeta").style.display   = "";
+  document.getElementById("msg1").classList.remove("show");
 
-function abrirLightbox(src){
-  document.getElementById("lightbox-img").src = src;
-  document.getElementById("lightbox").classList.add("open");
-}
+  const presente = document.getElementById("presente");
+  presente.style.cssText = "";
 
-function fecharLightbox(){
-  document.getElementById("lightbox").classList.remove("open");
-}
-
-// close lightbox on backdrop click
-document.getElementById("lightbox").addEventListener("click", function(e){
-  if(e.target === this) fecharLightbox();
-});
-
-function resetar(){
-  // strip .show from all sections instantly
-  sections().forEach(sec => {
-    sec.style.transition = "none";
-    sec.classList.remove("show");
-  });
-
-  // reset presente
-  document.getElementById("presente").style.cssText = "";
-
-  // reset carta
   const carta = document.getElementById("carta");
   carta.classList.add("hidden");
   carta.classList.remove("show");
   carta.style.cssText = "";
 
-  // reset fotoFinal
   const fotoFinal = document.getElementById("fotoFinal");
   fotoFinal.classList.add("hidden");
   fotoFinal.classList.remove("show");
 
-  // reset sec1 arrow button
-  document.getElementById("msg1").classList.remove("show");
-  sections()[1].querySelector("button").style.display = "";
-
-  // reset final section
+  document.getElementById("btnNaoClica").style.display = "";
   document.getElementById("msgFinal").classList.remove("show");
+
   const ultimaFoto = document.getElementById("ultimaFoto");
   ultimaFoto.classList.add("hidden");
   ultimaFoto.classList.remove("show");
+
   document.getElementById("btnsFinais").classList.remove("show");
-  document.getElementById("btnNaoClica").style.display = "";
 
-  // hide gallery again
-  const galeria = document.getElementById("galeria");
-  galeria.classList.add("hidden");
-  galeria.classList.remove("show");
-
-  // scroll to top and re-enable transitions
-  window.scrollTo({ top: 0, behavior: "instant" });
+  // deactivate all, go to 0
+  allSecs().forEach(s => s.classList.remove("active"));
+  current = 0;
+  slider.style.transition = "none";
+  slider.style.transform  = "translateY(0)";
   setTimeout(() => {
-    sections().forEach(sec => sec.style.transition = "");
-    revealSections();
+    slider.style.transition = "";
+    allSecs()[0].classList.add("active");
   }, 50);
 }
 
-function revealSections(){
-  const trigger = window.innerHeight * 0.8;
-  sections().forEach(sec => {
-    if(sec.getBoundingClientRect().top < trigger){
-      sec.classList.add("show");
-    }
-  });
+function abrirLightbox(src) {
+  document.getElementById("lightbox-img").src = src;
+  document.getElementById("lightbox").classList.add("open");
 }
 
-window.addEventListener("scroll", revealSections);
-window.addEventListener("load", revealSections);
+function fecharLightbox() {
+  document.getElementById("lightbox").classList.remove("open");
+}
 
+document.getElementById("lightbox").addEventListener("click", function(e) {
+  if (e.target === this) fecharLightbox();
+});
 </script>
 
 </body>
