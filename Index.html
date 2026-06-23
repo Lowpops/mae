@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mãe ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #111;
+  color: white;
+  text-align: center;
+  scroll-behavior: smooth;
+}
+
+section {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+h1, h2 {
+  margin-bottom: 10px;
+}
+
+p {
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+button {
+  width: 80%;
+  padding: 18px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  background: #ff4d6d;
+  color: white;
+  margin-top: 20px;
+}
+
+img {
+  width: 85%;
+  max-width: 300px;
+  border-radius: 12px;
+  margin: 10px 0;
+}
+
+.hidden {
+  display: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- TELA 1 -->
+<section>
+  <h1>Feliz aniversário, mãe ❤️</h1>
+  <button onclick="scrollToSection(1)">Começar</button>
+</section>
+
+<!-- TELA 2 -->
+<section>
+  <img src="https://via.placeholder.com/300">
+  <p>Obrigado por sempre estar comigo.</p>
+  <button onclick="scrollToSection(2)">Próximo</button>
+</section>
+
+<!-- TELA 3 -->
+<section>
+  <img src="https://via.placeholder.com/300">
+  <p>Você sempre cuidou de tudo.</p>
+  <button onclick="scrollToSection(3)">Próximo</button>
+</section>
+
+<!-- TELA 4 - CARTA -->
+<section>
+  <h2>Pra você</h2>
+
+  <p>
+    Mãe,<br><br>
+    Eu não falo isso sempre, mas você é a pessoa mais importante da minha vida.<br><br>
+    Tudo que eu sou hoje tem muito de você.<br><br>
+    Obrigado por nunca desistir de mim.<br><br>
+    Eu te amo ❤️
+  </p>
+
+  <button onclick="scrollToSection(4)">Continuar</button>
+</section>
+
+<!-- TELA FINAL -->
+<section>
+  <h2>Última coisa...</h2>
+
+  <button onclick="mostrarMensagem()">não clica</button>
+
+  <div id="msg" class="hidden">
+    <h3>Eu te amo muito ❤️</h3>
+    <p>Obrigado por tudo.</p>
+  </div>
+</section>
+
+<script>
+function scrollToSection(index) {
+  document.querySelectorAll("section")[index].scrollIntoView();
+}
+
+function mostrarMensagem() {
+  document.getElementById("msg").classList.remove("hidden");
+  if (navigator.vibrate) navigator.vibrate(100);
+}
+</script>
+
+</body>
+</html>
